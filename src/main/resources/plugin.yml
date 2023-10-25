@@ -1,0 +1,4 @@
+name: Access
+version: '${version}'
+main: de.thebjoredcraft.access.Access
+api-version: '1.20'
