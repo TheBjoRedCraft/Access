@@ -2,3 +2,5 @@ name: Access
 version: '${version}'
 main: de.thebjoredcraft.access.Access
 api-version: '1.20'
+author: TheBjoRedCraft
+description: This Plugin is a small Plugin that checks if you have permission to teleport to a world.
