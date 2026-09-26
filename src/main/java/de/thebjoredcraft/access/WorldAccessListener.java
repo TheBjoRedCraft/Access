@@ -1,5 +1,7 @@
 package de.thebjoredcraft.access;
 
+import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -11,30 +13,34 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class WorldAccessListener implements Listener {
+  private final String BYPASS_PERMISSION = "access.bypass";
+
     @EventHandler
     public void onWorldChange(PlayerTeleportEvent event){
         Player target = event.getPlayer();
-        if(!target.hasPermission("access.worlds." + event.getTo().getWorld().getName())){
+
+        if (!target.hasPermission("access.worlds." + event.getTo().getWorld().getName()) && !target.hasPermission(BYPASS_PERMISSION)){
             event.setCancelled(true);
-            AccessManager.denied(target);
-        }else{
-            AccessManager.allowed(target);
+            AccessManager.denied(target, event.getTo().getWorld());
+        } else {
+            AccessManager.allowed(target, event.getTo().getWorld());
         }
     }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player target = event.getPlayer();
         int worldCount = Bukkit.getWorlds().size();
         int currentCount = 0;
 
-        if(target.hasPermission("access.worlds." + target.getWorld().getName())){
-            AccessManager.allowed(target);
-        }else{
+        if (target.hasPermission("access.worlds." + target.getWorld().getName()) || target.hasPermission(BYPASS_PERMISSION)){
+            AccessManager.allowed(target, target.getWorld());
+        } else {
             for(World targetWorld : Bukkit.getWorlds()){
                 currentCount ++;
-                if(target.hasPermission("access.worlds." + targetWorld.getName())){
+                if(target.hasPermission("access.worlds." + targetWorld.getName()) || target.hasPermission(BYPASS_PERMISSION)){
                     target.teleport(targetWorld.getSpawnLocation());
-                    AccessManager.allowed(target);
+                    AccessManager.allowed(target, targetWorld);
                     return;
                 }
                 if(currentCount == worldCount){
