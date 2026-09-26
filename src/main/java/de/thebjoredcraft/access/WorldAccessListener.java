@@ -2,6 +2,7 @@ package de.thebjoredcraft.access;
 
 import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -44,8 +45,9 @@ public class WorldAccessListener implements Listener {
                     return;
                 }
                 if(currentCount == worldCount){
-                    target.kick(MiniMessage.miniMessage().deserialize("<bold>Es wurde keine Welt gefunden, zu der du Zugriff hast!"));
-                    currentCount = 0;
+                  Bukkit.getConsoleSender().sendRichMessage("<" + NamedTextColor.RED.asHexString() + ">[Access] Denied join for player " + target.getName() + " because no accessible world was found.");
+                  target.kick(MiniMessage.miniMessage().deserialize("<red>Es wurde keine Welt gefunden, zu der du Zugriff hast!"));
+                  currentCount = 0;
                 }
             }
         }
